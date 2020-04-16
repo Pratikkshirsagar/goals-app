@@ -1,34 +1,27 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, Button } from 'react-native';
+import { StyleSheet, Text, View, TextInput, Button, ScrollView, FlatList } from 'react-native';
+import GoalItem from './components/GoalItem';
+import GolaInput from './components/GoalInput';
 
 export default function App() {
-  const [enteredGoal, setEnteredGoal] = useState('');
   const [courseGoals, setCourseGoals] = useState([]);
-  const goalInputHandler = (enterText) => {
-    setEnteredGoal(enterText);
-  };
 
-  const addGoalHandler = () => {
-    setCourseGoals((currentGoals) => [...courseGoals, enteredGoal]);
+  const addGoalHandler = (goalTitle) => {
+    setCourseGoals((currentGoals) => [
+      ...courseGoals,
+      { key: Math.random().toString(), value: goalTitle },
+    ]);
   };
 
   return (
     <View style={style.screen}>
-      <View style={style.inputContainer}>
-        <TextInput
-          placeholder="Course Goal"
-          style={style.input}
-          onChangeText={goalInputHandler}
-          value={enteredGoal}
+      <GolaInput onAddGoal={addGoalHandler} />
+      <View style={{ paddingTop: 20 }}>
+        <FlatList
+          keyExtractor={(item, index) => item.id}
+          data={courseGoals}
+          renderItem={(itemData) => <GoalItem title={itemData.item.value} />}
         />
-        <Button title="Add" onPress={addGoalHandler} />
-      </View>
-      <View>
-        {courseGoals.map((goal, i) => (
-          <View key={i} style={style.listItem}>
-            <Text>{goal}</Text>
-          </View>
-        ))}
       </View>
     </View>
   );
